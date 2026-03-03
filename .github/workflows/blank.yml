@@ -1,7 +1,7 @@
 name: Workflow via Appsmith
 on:
   repository_dispatch:
-    types: [ativar-pelo-appsmith] 
+    types: [disparo-pelo-appsmith] 
 
 jobs:
   executar_tarefa:
