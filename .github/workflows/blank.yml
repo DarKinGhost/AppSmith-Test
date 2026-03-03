@@ -1,0 +1,19 @@
+name: Workflow via Appsmith
+on:
+  repository_dispatch:
+    types: [ativar-pelo-appsmith] 
+
+jobs:
+  executar_tarefa:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Log de Dados Recebidos
+        run: |
+          echo "Usuário que disparou: ${{ github.event.client_payload.usuario }}"
+          echo "Servidor de Origem: ${{ github.event.client_payload.servidor }}"
+      
+      - name: Simular Processamento
+        run: |
+          echo "Iniciando processamento de dados de F1..."
+          sleep 5
+          echo "Concluído!"
