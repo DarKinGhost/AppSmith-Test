@@ -26,6 +26,7 @@ jobs:
               print(f'MARCADOR: {tempo_passado}s passados')
               time.sleep(intervalo)
           print('--- TAREFA CONCLUÍDA ---')
+          "
       
       - name: Simular Processamento
         run: |
