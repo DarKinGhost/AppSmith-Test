@@ -28,8 +28,4 @@ jobs:
           print('--- TAREFA CONCLUÍDA ---')
           "
       
-      - name: Simular Processamento
-        run: |
-          echo "Iniciando processamento de dados de F1..."
-          sleep 5
-          echo "Concluído!"
+    
