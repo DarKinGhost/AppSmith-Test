@@ -11,6 +11,21 @@ jobs:
         run: |
           echo "Usuário que disparou: ${{ github.event.client_payload.usuario }}"
           echo "Servidor de Origem: ${{ github.event.client_payload.servidor }}"
+
+      - name: Iniciar Contador de 30min
+        run: |
+          python3 -c "
+          import time
+          duracao_total = 30 * 60  # 1800 segundos
+          intervalo = 10
+          inicio = time.time()
+          
+          print('--- INÍCIO DO MONITORAMENTO ---')
+          for i in range(0, duracao_total + 1, intervalo):
+              tempo_passado = i
+              print(f'MARCADOR: {tempo_passado}s passados')
+              time.sleep(intervalo)
+          print('--- TAREFA CONCLUÍDA ---')
       
       - name: Simular Processamento
         run: |
