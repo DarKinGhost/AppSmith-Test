@@ -12,59 +12,19 @@ jobs:
           echo "Usuário que disparou: ${{ github.event.client_payload.usuario }}"
           echo "Servidor de Origem: ${{ github.event.client_payload.servidor }}"
 
-      - name: Iniciar Contador e Gravar no Banco
-        env:
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_NAME: ${{ secrets.DB_NAME }}
-          RUN_ID: ${{ github.run_id }}
+      - name: Iniciar Contador de 30min
         run: |
-          pip install pymysql
           python3 -c "
           import time
-          import pymysql
-          import os
-
-          duracao_total = 30 * 60  # 1800 segundos
+          duracao_total = 30 * 60
           intervalo = 10
-          run_id = os.environ.get('RUN_ID')
-
-          print('--- INÍCIO DO MONITORAMENTO ---')
           
-          try:
-              # Conecta ao seu MariaDB
-              conexao = pymysql.connect(
-                  host=os.environ.get('DB_HOST'),
-                  user=os.environ.get('DB_USER'),
-                  password=os.environ.get('DB_PASSWORD'),
-                  database=os.environ.get('DB_NAME'),
-                  port=3306,
-                  autocommit=True # Garante que o insert vá na hora, sem esperar o fim do script
-              )
-              cursor = conexao.cursor()
-              print('Conexão com o banco estabelecida com sucesso!')
-          except Exception as e:
-              print(f'ERRO FATAL: Não foi possível conectar ao banco - {e}')
-              exit(1)
-
-          # Loop de 30 minutos
+          print('--- INÍCIO DO MONITORAMENTO ---')
           for i in range(0, duracao_total + 1, intervalo):
               print(f'MARCADOR: {i}s passados')
-              
-              try:
-                  # Dispara o dado para o seu banco
-                  sql = 'INSERT INTO telemetria_github (run_id, segundos_passados) VALUES (%s, %s)'
-                  cursor.execute(sql, (run_id, i))
-              except Exception as e:
-                  print(f'Erro ao gravar o marcador {i}s no banco: {e}')
-              
               time.sleep(intervalo)
-
-          conexao.close()
           print('--- TAREFA CONCLUÍDA ---')
           "
-      
     
       - name: Gravar Log no MariaDB
         if: always() # Garante que o log será salvo mesmo se o contador der erro
