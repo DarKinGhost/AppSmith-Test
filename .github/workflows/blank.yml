@@ -29,3 +29,44 @@ jobs:
           "
       
     
+      - name: Gravar Log no MariaDB
+        if: always() # Garante que o log será salvo mesmo se o contador der erro
+        run: |
+          pip install pymysql
+          python3 -c "
+          import pymysql
+          import os
+
+          status_job = '${{ job.status }}'
+          run_id = os.environ.get('GITHUB_RUN_ID')
+
+          try:
+              print('Conectando ao banco de dados...')
+              conexao = pymysql.connect(
+                  host=os.environ['DB_HOST'],
+                  user=os.environ['DB_USER'],
+                  password=os.environ['DB_PASSWORD'],
+                  database=os.environ['DB_NAME'],
+                  port=3306
+              )
+              cursor = conexao.cursor()
+              
+              sql = 'INSERT INTO logs_github_actions (run_id, status_final, mensagem) VALUES (%s, %s, %s)'
+              valores = (run_id, status_job, 'Execução finalizada pelo GitHub Actions')
+              
+              cursor.execute(sql, valores)
+              conexao.commit()
+              print('Log gravado com sucesso!')
+              
+          except Exception as e:
+              print(f'Erro ao gravar no banco: {e}')
+              
+          finally:
+              if 'conexao' in locals() and conexao.open:
+                  conexao.close()
+          "
+        env:
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_NAME: ${{ secrets.DB_NAME }}
