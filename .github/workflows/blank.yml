@@ -19,11 +19,11 @@ jobs:
           duracao_total = 30 * 60
           intervalo = 10
           
-          print('--- INÍCIO DO MONITORAMENTO ---')
+          print('--- INÍCIO DO MONITORAMENTO ---', flush=True)
           for i in range(0, duracao_total + 1, intervalo):
-              print(f'MARCADOR: {i}s passados')
+              print(f'MARCADOR: {i}s passados', flush=True)
               time.sleep(intervalo)
-          print('--- TAREFA CONCLUÍDA ---')
+          print('--- TAREFA CONCLUÍDA ---', flush=True)
           "
     
       - name: Gravar Log no MariaDB
